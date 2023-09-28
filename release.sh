@@ -49,15 +49,6 @@ EOF
     fi   
 }
 
-function git_commit() {
-    case "$(git describe --always --dirty)" in
-        *dirty)
-            git commit --all -m "$*"
-            git push
-            ;;
-    esac
-}
-
 function main() {
     # Downloading the source tar
     curl --silent --location --insecure --fail "https://github.com/kubernetes-csi/external-health-monitor/archive/refs/tags/v${BUILD_VERSION}.tar.gz" | tar -zxf -
@@ -71,9 +62,7 @@ function main() {
     "${PODMAN}" push "${IMG}"
 
     # cleanup
-    cd - && rm -rf external-health-monitor-"${BUILD_VERSION}"
-    
-    git_commit "Update version v${BUILD_VERSION}"
+    cd - && rm -rf external-health-monitor-"${BUILD_VERSION}"    
 }
 
 init "$@"
